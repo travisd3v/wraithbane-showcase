@@ -4,9 +4,11 @@
 ![Plataforma](https://img.shields.io/badge/Plataforma-Navegador%20Web-000000?style=for-the-badge&logo=googlechrome&logoColor=white)
 ![Stack](https://img.shields.io/badge/Stack-JavaScript%20Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-Videojuego de plataformas y combate contra jefes en 2D con temática de fantasía oscura. El proyecto se caracteriza por un motor propietario desarrollado de forma nativa, optimizado para ejecución en navegadores modernos mediante una arquitectura desacoplada y sistemas de renderizado personalizados.
+Este es mi primer juego como proyecto de desarrollo. Se trata de un *platformer* en 2D con temática de fantasía oscura y combate contra jefes, construido íntegramente por mí con JavaScript Vanilla y Canvas API, sin recurrir a motores comerciales como Unity o Unreal.
 
-[Sitio Web](https://wraithbane.pro/) | [Perfil del Autor](https://wraithbane.pro/autor)
+Lo que más me motivó fue la posibilidad de combinar una arquitectura desacoplada de red con un motor gráfico optimizado para navegadores, manteniendo al mismo tiempo un control total sobre la lógica del juego.
+
+[Sitio Web](https://wraithbane.pro/) | [Mi Perfil](https://wraithbane.pro/autor)
 
 ---
 
@@ -35,7 +37,7 @@ Backend administrativo para la gestión de acceso y persistencia.
 
 ## Motor Gráfico y Núcleo de Ingeniería
 
-El motor de Wraithbane ha sido diseñado específicamente para maximizar el rendimiento de la API Canvas 2D sin frameworks externos:
+Diseñé cada subsistema del motor con un enfoque específico de optimización:
 
 ### Ciclo de Ejecución y Sincronización
 *   **Frame Loop:** Basado en `requestAnimationFrame` con cálculo dinámico de tiempo delta para asegurar una velocidad de juego constante a 60 FPS.
@@ -66,25 +68,25 @@ El sistema de jefes utiliza una lógica de estados inmutable gestionada por un a
 
 ## Integración con Streaming en Tiempo Real
 
-La arquitectura permite una interacción bidireccional entre la audiencia y la partida de Travis:
+Una parte esencial del proyecto es la capacidad de interactuar con la audiencia de mis transmisiones en vivo:
 1.  **Normalización de Sockets:** El puente traduce señales externas en estructuras de datos estandarizadas.
 2.  **Mapeo de Atributos:** Catálogo dinámico que vincula identificadores externos con funciones de activación en el juego (curación, invocación o disparos de proyectiles).
 3.  **Renderizado Dinámico de Overlays:** El motor descarga recursos desde CDN externos de forma asíncrona y los integra directamente en el ciclo de renderizado con transiciones suaves de opacidad.
 
 ---
 
-## Atribuciones y Desarrollo Asistido por IA
+## Atribuciones y Flujo de Trabajo
 
-Este proyecto fue creado en primera persona por **Travis**, contando con la guía y mentoría de sus padres programadores y desarrolladores. El desarrollo integra activamente flujos de trabajo asistidos por modelos de inteligencia artificial de última generación.
+Este proyecto fue creado por mí, con la guía y mentoría de mis padres programadores y desarrolladores. El desarrollo integra activamente flujos de trabajo asistidos por inteligencia artificial de última generación.
 
-### Asistentes de IA Utilizados
+### Modelos de IA Utilizados
 
-| Modelo | Detalle de Uso |
+| Modelo | Implementación |
 | --- | --- |
 | ![Claude](https://img.shields.io/badge/Claude-Sonnet%20%7C%20Opus%20%7C%20Fable-D97757?style=for-the-badge&logo=anthropic&logoColor=white) | Modelos avanzados de Anthropic empleados para razonamiento crítico y asistencia en arquitectura. |
 | ![MiniMax](https://img.shields.io/badge/MiniMax-M3%20(Coding%20Plan)-FF6B35?style=for-the-badge&logo=openai&logoColor=white) | Modelo **M3** mediante plan de tokens y consumo puntual a través de la API de NVIDIA. |
 | ![GLM](https://img.shields.io/badge/GLM-5.2%20(API%20NVIDIA)-4D8EFF?style=for-the-badge&logo=zhipu&logoColor=white) | Modelo **5.2** de Zhipu integrado vía API de NVIDIA. |
-| ![Gemini](https://img.shields.io/badge/Gemini-3.5%20(Vertex)-4285F4?style=for-the-badge&logo=google&logoColor=white) | Modelo **3.5** de Google ejecutado a través de la plataforma Vertex de los padres. |
+| ![Gemini](https://img.shields.io/badge/Gemini-3.5%20(Vertex)-4285F4?style=for-the-badge&logo=google&logoColor=white) | Modelo **3.5** de Google ejecutado a través de la plataforma Vertex de mis padres. |
 
 ### Entornos de Desarrollo
 
@@ -104,7 +106,7 @@ Este proyecto fue creado en primera persona por **Travis**, contando con la guí
 
 ![Gentle-AI](https://img.shields.io/badge/SDD-Gentle_AI-FF8C00?style=for-the-badge&logo=openai&logoColor=white)
 
-Se hizo uso del framework **[Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai)** para el ciclo de desarrollo basado en especificaciones (Spec-Driven Development). Esta herramienta resultó ser una elección **excelente** para trabajar en proyectos de esta naturaleza, gracias a su integración nativa con múltiples modelos de IA, gestión de contexto avanzado y automatización de fases de planificación e implementación.
+Empleé el framework **[Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai)** para el ciclo de desarrollo basado en especificaciones (Spec-Driven Development). Esta herramienta resultó ser una elección **excelente** para trabajar en proyectos de esta naturaleza, gracias a su integración nativa con múltiples modelos de IA, gestión de contexto avanzado y automatización de fases de planificación e implementación.
 
 ---
 
