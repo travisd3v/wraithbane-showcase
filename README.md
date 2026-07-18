@@ -4,7 +4,7 @@
 ![Plataforma](https://img.shields.io/badge/Plataforma-Navegador%20Web-000000?style=for-the-badge&logo=googlechrome&logoColor=white)
 ![Stack](https://img.shields.io/badge/Stack-JavaScript%20Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-Videojuego de plataformas y combate contra jefes en 2D con temática de fantasía oscura. El proyecto se caracteriza por haber sido desarrollado de forma nativa, prescindiendo de motores comerciales o plantillas prefabricadas, integrando una arquitectura desacoplada para interacciones en tiempo real.
+Videojuego de plataformas y combate contra jefes en 2D con temática de fantasía oscura. El proyecto se caracteriza por un motor propietario desarrollado de forma nativa, optimizado para ejecución en navegadores modernos mediante una arquitectura desacoplada y sistemas de renderizado personalizados.
 
 [Sitio Web](https://wraithbane.pro/) | [Perfil del Autor](https://wraithbane.pro/autor)
 
@@ -15,58 +15,62 @@ Videojuego de plataformas y combate contra jefes en 2D con temática de fantasí
 El sistema se fundamenta en tres componentes independientes que garantizan la modularidad y el aislamiento de responsabilidades:
 
 ### Cliente del Juego (Frontend)
-Núcleo gráfico y lógico ejecutado directamente en el entorno del navegador.
-*   **Responsabilidad:** Procesamiento de físicas de colisión AABB, renderizado de alta fidelidad, IA de jefes y gestión del estado del jugador.
-*   **Infraestructura:** Aplicación estática optimizada mediante Vite para una carga inmediata.
-*   **Comunicación:** Conexión persistente mediante Socket.IO para eventos dinámicos.
+Núcleo gráfico ejecutado en el hilo principal del navegador.
+*   **Responsabilidad:** Procesamiento de físicas, renderizado, IA de jefes y gestión de estado.
+*   **Infraestructura:** SPA estática optimizada con Vite para garantizar tiempos de carga mínimos.
+*   **Comunicación:** Suscriptor Socket.IO para el procesamiento de eventos asíncronos externos.
 
 ### Puente de Transmisión (Bridge)
-Middleware encargado de la integración con plataformas externas de streaming.
-*   **Responsabilidad:** Captura y normalización de eventos de TikTok Live (regalos, comentarios y seguidores).
-*   **Traducción:** Conversión de metadatos externos en comandos ejecutables por el motor del juego en tiempo real.
-*   **Distribución:** Servidor Node.js que difunde eventos a múltiples clientes de forma concurrente.
+Middleware de alta disponibilidad para la integración con feeds de datos externos.
+*   **Responsabilidad:** Captura, normalización y difusión de eventos de streaming en tiempo real.
+*   **Traducción:** Esquematización de payloads externos en eventos de red consumibles por el motor.
+*   **Distribución:** Servidor Node.js optimizado para conexiones simultáneas de baja latencia.
 
 ### Servidor de Control y Telemetría
-Backend administrativo enfocado en la seguridad y gestión de datos.
-*   **Responsabilidad:** Control de acceso mediante OAuth2 (Patreon), persistencia de perfiles y captura de telemetría de rendimiento para control de calidad.
-*   **Almacenamiento:** Integración con Supabase para la sincronización global de progreso y tablas de clasificación.
+Backend administrativo para la gestión de acceso y persistencia.
+*   **Responsabilidad:** Autenticación OAuth2, persistencia de perfiles y recolección de telemetría de rendimiento.
+*   **Almacenamiento:** Arquitectura de datos servida mediante Supabase para sincronización global.
 
 ---
 
-## Especificaciones Técnicas
+## Motor Gráfico y Núcleo de Ingeniería
 
-### Núcleo de Desarrollo
-*   **Lenguaje de Programación:** JavaScript Vanilla con módulos nativos y entorno estricto.
-*   **Renderizado:** API de Canvas 2D de HTML5 con resolución lógica de 1280x720. Sistema de escalado pixel-perfect mediante transformaciones CSS.
-*   **Entorno de Pruebas:** Vitest para la validación automática de mecánicas de combate y sistemas de físicas.
+El motor de Wraithbane ha sido diseñado específicamente para maximizar el rendimiento de la API Canvas 2D sin frameworks externos:
 
-### Infraestructura y Despliegue
-*   **Contenerización:** Uso extensivo de Docker y Docker Compose para el aislamiento de servicios.
-*   **Servidor Web y Proxy:** Caddy configurado para la terminación automática de TLS y enrutamiento inteligente de tráfico hacia los contenedores internos.
-*   **Mantenimiento:** Pipeline de despliegue automatizado que garantiza la actualización del juego sin interrumpir la disponibilidad de los servicios de backend.
+### Ciclo de Ejecución y Sincronización
+*   **Frame Loop:** Basado en `requestAnimationFrame` con cálculo dinámico de tiempo delta para asegurar una velocidad de juego constante a 60 FPS.
+*   **Hitstop System:** Implementación de congelación selectiva de frames tras impactos críticos. Esta técnica acentúa la respuesta sensorial del combate sin interrumpir la lógica de fondo.
 
----
+### Gestión Avanzada de Recursos (AtlasCache)
+*   **Texture Packing:** Uso de atlas de texturas en formato WebP con soporte para **Trimmed Rects** (eliminación de píxeles transparentes redundantes) para optimizar el uso de VRAM.
+*   **Compensación Dinámica:** Algoritmo integrado que revierte el recorte en tiempo real durante el renderizado, garantizando una posición pixel-perfect idéntica a la imagen original.
+*   **Asynchronous Decoding:** Carga perezosa de recursos que permite el inicio de la simulación mientras las páginas del atlas se decodifican en hilos secundarios.
 
-## Arquitectura del Motor de Juego
-
-### Gestión del Ciclo de Ejecución
-Implementación de un bucle de juego basado en `requestAnimationFrame` con sincronización de tiempo delta. Este enfoque asegura una velocidad de simulación constante de 60 FPS, independientemente de la frecuencia de refresco del monitor del usuario.
-
-### Sistema de Colisiones y Físicas
-Utilización de algoritmos de cajas delimitadoras alineadas a los ejes (AABB) optimizados para el rendimiento en dispositivos web. Se incluye soporte para plataformas semi-sólidas y sistemas de resolución de penetración de colisiones.
-
-### Sistema de Checkpoints Inteligente
-El motor realiza capturas de estado automáticas al alcanzar hitos de progreso dentro de cada nivel. El sistema de caídas (Pit-fall) utiliza estos datos para reposicionar al jugador de forma segura, eliminando la frustración por errores de precisión en plataformas.
+### Físicas y Resolución de Colisiones
+*   **Motor AABB Propietario:** Detección de colisiones basada en cajas delimitadoras alineadas a los ejes con resolución de penetración de baja sobrecarga computacional.
+*   **Plataformas Unidireccionales:** Lógica personalizada para el manejo de plataformas semi-sólidas y sistemas de descenso intencional (Gravity Slam).
+*   **Manejo de Lag Spikes:** Lógica de compensación de posición segura que previene que los objetos atraviesen muros ante fluctuaciones en la tasa de frames.
 
 ---
 
-## Integración Dinámica con Streaming
+## Sistemas de Estado y Persistencia
 
-La arquitectura permite que la audiencia influya directamente en la partida mediante el envío de regalos virtuales:
-1.  **Captura de Señal:** El puente procesa el flujo de datos de la API de streaming.
-2.  **Ejecución de Efectos:** Los regalos se mapean a acciones específicas, como la invocación de proyectiles adicionales o la curación del jefe final.
-3.  **Renderizado Asíncrono:** Uso de overlays dinámicos que descargan y dibujan recursos visuales desde redes de entrega de contenido (CDN) externas de forma eficiente.
+### Máquina de Estados Multifase
+El sistema de jefes utiliza una lógica de estados inmutable gestionada por un almacén de fase dedicado (`BossPhaseStore`). Esto permite que el jefe retenga su salud y comportamiento exacto entre intentos del jugador, optimizando la experiencia de juego sin recargas de página.
+
+### Generación de Efectos Procedurales
+*   **Sistemas de Partículas:** Motor de partículas basado en buffers locales para la generación de humo, chispas y explosiones.
+*   **Ambiente Dinámico:** Generadores procedurales para efectos climáticos (lluvia y niebla) que se ejecutan en paralelo con el renderizado de sprites.
 
 ---
 
-Este proyecto representa un esfuerzo de ingeniería por demostrar que las tecnologías web modernas son capaces de sostener experiencias de juego complejas y profesionales.
+## Integración con Streaming en Tiempo Real
+
+La arquitectura permite una interacción bidireccional entre la audiencia y la partida de Travis:
+1.  **Normalización de Sockets:** El puente traduce señales externas en estructuras de datos estandarizadas.
+2.  **Mapeo de Atributos:** Catálogo dinámico que vincula identificadores externos con funciones de activación en el juego (curación, invocación o disparos de proyectiles).
+3.  **Renderizado Dinámico de Overlays:** El motor descarga recursos desde CDN externos de forma asíncrona y los integra directamente en el ciclo de renderizado con transiciones suaves de opacidad.
+
+---
+
+Este proyecto representa una demostración de ingeniería web aplicada, donde el control total sobre el pipeline de renderizado y la arquitectura de red permite crear experiencias de juego de nivel profesional en el navegador.
