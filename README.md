@@ -1,110 +1,72 @@
-# Wraithbane - Showcase Tecnico
+# Wraithbane — Showcase Técnico
 
-🎮 Videojuego inmersivo de plataformas, accion y combate contra jefes en 2D con tematica de fantasia oscura, desarrollado integramente desde cero sin motores comerciales (como Unity o Unreal) ni plantillas prefabricadas. El proyecto demuestra como estructurar una arquitectura desacoplada uniendo un motor grafico de alto rendimiento en el navegador con integraciones en tiempo real para transmisiones en vivo.
+![Estado del Proyecto](https://img.shields.io/badge/Estado-Beta%20Patreon--Gated-F96854?style=for-the-badge&logo=patreon&logoColor=white)
+![Plataforma](https://img.shields.io/badge/Plataforma-Navegador%20Web-000000?style=for-the-badge&logo=googlechrome&logoColor=white)
+![Stack](https://img.shields.io/badge/Stack-JavaScript%20Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-🌐 **Prueba de la beta privada:** https://wraithbane.pro/  
-👤 **Sobre el autor:** https://wraithbane.pro/autor
+Videojuego de plataformas y combate contra jefes en 2D con temática de fantasía oscura. El proyecto se caracteriza por haber sido desarrollado de forma nativa, prescindiendo de motores comerciales o plantillas prefabricadas, integrando una arquitectura desacoplada para interacciones en tiempo real.
 
----
-
-## 🏗️ Topologia de la Arquitectura
-
-El ecosistema de Wraithbane esta compuesto por tres sub-sistemas independientes que se comunican mediante protocolos web estandares, asegurando aislamiento de responsabilidades y portabilidad:
-
-### 🖥️ Cliente del Juego (Frontend)
-Motor grafico y logica de juego que se ejecuta en el navegador del usuario.
-*   **Funcion:** Renderizado de graficos, fisicas de colision personalizadas, IA de enemigos, control de estados de combate y HUD.
-*   **Pipeline:** Compilado como una aplicacion de pagina unica (SPA) estatica ultra liviana mediante Vite.
-*   **Conectividad:** Cliente Socket.IO que se suscribe a los eventos del bridge de transmision en vivo y APIs REST de telemetria.
-
-### 🔌 Puente de Transmision (Bridge)
-Servidor de integracion bidireccional en tiempo real.
-*   **Funcion:** Conectarse al feed de eventos de transmisiones en directo de TikTok mediante web scraping y conexion de sockets inversa. Captura comentarios, me gustas, nuevos seguidores y regalos enviados por la audiencia.
-*   **Normalizacion:** Traduce los payloads variables de los servicios externos a un esquema de eventos unificado para el motor del juego.
-*   **Distribucion:** Sostiene salas de Socket.IO que difunden los eventos filtrados de manera inmediata a las instancias activas del cliente de juego.
-
-### 🛡️ Servidor de Control y Telemetria (Auth y Telemetria)
-Backend administrativo, portal de acceso y pasarela de QA.
-*   **Funcion:** Control de acceso de patrocinadores mediante OAuth2 conectado a la API de Patreon (Patreon Gated), almacenamiento de partidas salvadas, tabla de clasificacion global e inyeccion de scripts de QA para diagnostico de rendimiento en tiempo real.
-*   **Persistencia:** Gestion de perfiles de usuario, sincronizacion de progreso y analisis a traves de Supabase.
+[Sitio Web](https://wraithbane.pro/) | [Perfil del Autor](https://wraithbane.pro/autor)
 
 ---
 
-## 🛠️ Stack Tecnico Detallado
+## Topología de la Arquitectura
 
-### Motor y Cliente de Juego
-*   **Lenguaje:** JavaScript Vanilla (Modulos de ECMAScript nativos, con integracion progresiva de TypeScript en entorno estricto).
-*   **Renderizado:** API de Canvas 2D de HTML5. Resolucion logica de 1280x720 pixeles, auto-escalada mediante transformaciones matriciales de CSS para adaptarse a pantallas retina y monitores de alta resolucion sin deformacion de pixeles (Pixel-Perfect rendering).
-*   **Empaquetador de Recursos:** Vite para resolucion rapida de modulos, optimizacion de assets en compilacion de produccion y hot module replacement en desarrollo.
-*   **Entorno de Pruebas:** Vitest para la ejecucion de pruebas de regresion e integracion sobre los sistemas de fisica, calculo de dano y persistencia.
-*   **Gestion de Dependencias:** pnpm (arquitectura monorrepo con enlaces de alta eficiencia).
+El sistema se fundamenta en tres componentes independientes que garantizan la modularidad y el aislamiento de responsabilidades:
 
-### Servidores Backend
-*   **Entorno de Ejecucion:** Node.js en todas las capas del servidor.
-*   **Librerias Core de Red:** Express para servicios de API y ruteo, Socket.IO para el canal persistente de baja latencia (WebSockets con fallback HTTP long-polling).
-*   **Conexiones Externas:** Librerias de conexion reversa para feed de streaming (tiktok-live-connector) y SDK oficial de Supabase para integraciones con bases de datos PostgreSQL en la nube.
+### Cliente del Juego (Frontend)
+Núcleo gráfico y lógico ejecutado directamente en el entorno del navegador.
+*   **Responsabilidad:** Procesamiento de físicas de colisión AABB, renderizado de alta fidelidad, IA de jefes y gestión del estado del jugador.
+*   **Infraestructura:** Aplicación estática optimizada mediante Vite para una carga inmediata.
+*   **Comunicación:** Conexión persistente mediante Socket.IO para eventos dinámicos.
 
-### Despliegue e Infraestructura (Produccion)
-*   **Alojamiento:** Servidor de Produccion (VPS dedicado Linux).
-*   **Aislamiento:** Contenedores Docker coordinados con Docker Compose bajo una red virtualizada privada y segura.
-*   **Proxy Inverso y Seguridad:** Servidor Caddy actuando como terminador TLS (certificados automaticos via Let's Encrypt), ruteando trafico HTTPS a archivos estaticos, APIs del servidor y endpoints Socket.IO de forma eficiente.
+### Puente de Transmisión (Bridge)
+Middleware encargado de la integración con plataformas externas de streaming.
+*   **Responsabilidad:** Captura y normalización de eventos de TikTok Live (regalos, comentarios y seguidores).
+*   **Traducción:** Conversión de metadatos externos en comandos ejecutables por el motor del juego en tiempo real.
+*   **Distribución:** Servidor Node.js que difunde eventos a múltiples clientes de forma concurrente.
 
----
-
-## ⚙️ Arquitectura del Motor Grafico y Fisicas
-
-El motor de Wraithbane fue programado de forma nativa sin frameworks de terceros. Sus modulos clave incluyen:
-
-### ⏱️ Frame Loop y Temporizacion
-Implementacion basada en `requestAnimationFrame` sincronizada con un delta time estricto. Esto previene desfaces de velocidad de juego en monitores con tasas de refresco de alta frecuencia (como 144Hz o 240Hz), manteniendo una velocidad de simulacion constante equivalente a 60 frames por segundo.
-
-### 📐 Sistema de Fisicas y Colisiones
-*   **Caja delimitadora alineada a los ejes (AABB):** Calculos optimizados de colision entre el jugador, proyectiles y elementos del entorno.
-*   **Deteccion de plataformas semi-solidas:** Permite al personaje subir a traves de plataformas saltando desde abajo y descender de forma intencional pulsando abajo y espacio (Gravity Slam).
-*   **Ajuste de posicion seguro:** Algoritmo de des-penetracion de colisiones que previene que los personajes queden atrapados dentro de muros o suelos ante caidas de frames.
-
-### 💾 Checkpoints Intra-nivel Inteligentes
-*   El mapa se divide proceduralmente en zonas de progreso.
-*   Al cruzar estos umbrales invisibles, el juego toma un snapshot en memoria del estado de vida, proyectiles y progreso del jugador.
-*   **Sistema de caidas (Pit-fall):** Caer al vacio no descuenta vida; reubica al jugador en el ultimo suelo seguro guardado para evitar frustracion innecesaria y mantener la fluidez.
+### Servidor de Control y Telemetría
+Backend administrativo enfocado en la seguridad y gestión de datos.
+*   **Responsabilidad:** Control de acceso mediante OAuth2 (Patreon), persistencia de perfiles y captura de telemetría de rendimiento para control de calidad.
+*   **Almacenamiento:** Integración con Supabase para la sincronización global de progreso y tablas de clasificación.
 
 ---
 
-## 👾 Arquitectura del Sistema de Jefes (El Rey Espectro)
+## Especificaciones Técnicas
 
-El combate final contra el Rey Espectro cuenta con un diseno estructurado de alta complejidad tecnica:
+### Núcleo de Desarrollo
+*   **Lenguaje de Programación:** JavaScript Vanilla con módulos nativos y entorno estricto.
+*   **Renderizado:** API de Canvas 2D de HTML5 con resolución lógica de 1280x720. Sistema de escalado pixel-perfect mediante transformaciones CSS.
+*   **Entorno de Pruebas:** Vitest para la validación automática de mecánicas de combate y sistemas de físicas.
 
-### 🧠 Persistencia del Estado de Combate
-Modulo de estado persistente que mantiene el estado actual de la barra de vida del jefe e hitboxes activas de forma inmutable durante la sesion. Si el jugador muere dentro de la arena del jefe, al reiniciar el nivel, el jefe retiene la fase y la barra de salud que tenia en el momento de la derrota, evitando la repeticion de fases ya superadas y optimizando la reentrada del jugador.
-
-### 🔄 Maquina de Estados de Ataque Multifase
-El jefe muta a traves de 5 fases diferentes controladas por umbrales precisos de salud:
-*   **Fase 1 (Acecho - 100% a 80% HP):** Patron defensivo con proyectiles parryables de rango largo.
-*   **Fase 2 (Colera - 80% a 55% HP):** Patrones de area amplia en tierra y lluvia vertical aleatoria.
-*   **Fase 3 (Disolucion - 55% a 30% HP):** Comportamiento de flotacion lateral persistente en el eje Y, alternando rafagas de proyectiles rapidos.
-*   **Fase 4 (Umbra - 30% a 10% HP):** Teletransportaciones aleatorias basadas en temporizadores e inmunidad temporal tras realizar ataques.
-*   **Fase 5 (Extincion - 10% a 0% HP):** Comportamiento frenetico que combina multiples clases de proyectiles simultaneamente e invocacion de esbirros de rango melee.
-
-### 🛡️ Capa de Blindaje (HUD Dual)
-El jefe cuenta con una barra de escudo que absorbe el 30% del dano total recibido. La renderizacion de esta capa en el canvas utiliza una barra secundaria cyan en paralelo con la barra de salud real.
+### Infraestructura y Despliegue
+*   **Contenerización:** Uso extensivo de Docker y Docker Compose para el aislamiento de servicios.
+*   **Servidor Web y Proxy:** Caddy configurado para la terminación automática de TLS y enrutamiento inteligente de tráfico hacia los contenedores internos.
+*   **Mantenimiento:** Pipeline de despliegue automatizado que garantiza la actualización del juego sin interrumpir la disponibilidad de los servicios de backend.
 
 ---
 
-## 💬 Arquitectura del Puente TikTok Live
+## Arquitectura del Motor de Juego
 
-La conexion de eventos de redes sociales con la logica del juego funciona de la siguiente manera:
+### Gestión del Ciclo de Ejecución
+Implementación de un bucle de juego basado en `requestAnimationFrame` con sincronización de tiempo delta. Este enfoque asegura una velocidad de simulación constante de 60 FPS, independientemente de la frecuencia de refresco del monitor del usuario.
 
-1.  **Captura de Sockets:** El bridge se conecta a las APIs de TikTok simulando una sesion de espectador sobre el identificador de transmision provisto.
-2.  **Mapeo de Regalos:** Un catalogo de referencias mapea los identificadores de regalos de TikTok a estructuras de datos in-game. Por ejemplo, el envio de un regalo especifico puede disparar una curacion al jefe, o un regalo de menor valor puede invocar proyectiles adicionales en pantalla.
-3.  **Renderizacion Dinamica en Canvas:** Cuando el bridge emite un evento de regalo al juego, el overlay de la partida captura el payload que contiene el nombre del remitente y la URL de la imagen del regalo. La imagen se descarga de forma asincrona desde el CDN de TikTok y se dibuja directamente en el canvas con efectos de transiciones fluidas de opacidad de forma dinamica, usando fallbacks graficos locales si la conexion al CDN falla.
+### Sistema de Colisiones y Físicas
+Utilización de algoritmos de cajas delimitadoras alineadas a los ejes (AABB) optimizados para el rendimiento en dispositivos web. Se incluye soporte para plataformas semi-sólidas y sistemas de resolución de penetración de colisiones.
+
+### Sistema de Checkpoints Inteligente
+El motor realiza capturas de estado automáticas al alcanzar hitos de progreso dentro de cada nivel. El sistema de caídas (Pit-fall) utiliza estos datos para reposicionar al jugador de forma segura, eliminando la frustración por errores de precisión en plataformas.
 
 ---
 
-## 🚀 Pipeline de Despliegue y Mantenimiento
+## Integración Dinámica con Streaming
 
-Para facilitar el desarrollo seguro y despliegues rapidos sin interrumpir las pruebas activas en el VPS, se utiliza el siguiente flujo de trabajo:
+La arquitectura permite que la audiencia influya directamente en la partida mediante el envío de regalos virtuales:
+1.  **Captura de Señal:** El puente procesa el flujo de datos de la API de streaming.
+2.  **Ejecución de Efectos:** Los regalos se mapean a acciones específicas, como la invocación de proyectiles adicionales o la curación del jefe final.
+3.  **Renderizado Asíncrono:** Uso de overlays dinámicos que descargan y dibujan recursos visuales desde redes de entrega de contenido (CDN) externas de forma eficiente.
 
-1.  **Desarrollo Local:** Ejecucion de servidores en entorno local con recarga en vivo de codigo. Las credenciales de integraciones de bases de datos y tokens se leen localmente desde archivos de entorno controlados y no incluidos en el repositorio (.env).
-2.  **Pruebas Unitarias:** Ejecucion de suites de pruebas con Vitest antes de cada integracion de codigo para certificar estabilidad en las fisicas del jugador.
-3.  **Compilacion y Empaquetado:** Generacion de archivos distribuidos optimizados utilizando minificacion de codigo estatico via Vite.
-4.  **Despliegue Contenerizado:** El juego compilado se monta en los volumenes de produccion del contenedor web, mientras que los servidores Node.js (Bridge y control) se reconstruyen dentro de la red privada aislada de Docker en el servidor para reflejar los ultimos cambios inmediatamente.
+---
+
+Este proyecto representa un esfuerzo de ingeniería por demostrar que las tecnologías web modernas son capaces de sostener experiencias de juego complejas y profesionales.
