@@ -73,4 +73,39 @@ La arquitectura permite una interacción bidireccional entre la audiencia y la p
 
 ---
 
+## Atribuciones y Desarrollo Asistido por IA
+
+Este proyecto fue creado en primera persona por **Travis**, contando con la guía y mentoría de sus padres programadores y desarrolladores. El desarrollo integra activamente flujos de trabajo asistidos por modelos de inteligencia artificial de última generación.
+
+### Asistentes de IA Utilizados
+
+| Modelo | Detalle de Uso |
+| --- | --- |
+| ![Claude](https://img.shields.io/badge/Claude-Sonnet%20%7C%20Opus%20%7C%20Fable-D97757?style=for-the-badge&logo=anthropic&logoColor=white) | Modelos avanzados de Anthropic empleados para razonamiento crítico y asistencia en arquitectura. |
+| ![MiniMax](https://img.shields.io/badge/MiniMax-M3%20(Coding%20Plan)-FF6B35?style=for-the-badge&logo=openai&logoColor=white) | Modelo **M3** mediante plan de tokens y consumo puntual a través de la API de NVIDIA. |
+| ![GLM](https://img.shields.io/badge/GLM-5.2%20(API%20NVIDIA)-4D8EFF?style=for-the-badge&logo=zhipu&logoColor=white) | Modelo **5.2** de Zhipu integrado vía API de NVIDIA. |
+| ![Gemini](https://img.shields.io/badge/Gemini-3.5%20(Vertex)-4285F4?style=for-the-badge&logo=google&logoColor=white) | Modelo **3.5** de Google ejecutado a través de la plataforma Vertex de los padres. |
+
+### Entornos de Desarrollo
+
+| Herramienta | Detalle |
+| --- | --- |
+| ![Kiro](https://img.shields.io/badge/IDE-Kiro-7E47E0?style=for-the-badge) | Entorno integrado para la generación de código. |
+| ![Antigravity](https://img.shields.io/badge/IDE-Antigravity-000000?style=for-the-badge) | Entorno secundario para tareas de implementación. |
+
+### Terminales y Frameworks CLI
+
+| Herramienta | Detalle |
+| --- | --- |
+| ![OpenCode](https://img.shields.io/badge/CLI-OpenCode-000000?style=for-the-badge) | Interfaz de comandos principal utilizada para la edición y ejecución de tareas. |
+| ![Claude Code](https://img.shields.io/badge/CLI-Claude%20Code-D97757?style=for-the-badge&logo=anthropic&logoColor=white) | Herramienta complementaria para interacción con el modelo Claude. |
+
+### Metodología de Especificación Dirigida (SDD)
+
+![Gentle-AI](https://img.shields.io/badge/SDD-Gentle_AI-FF8C00?style=for-the-badge&logo=openai&logoColor=white)
+
+Se hizo uso del framework **[Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai)** para el ciclo de desarrollo basado en especificaciones (Spec-Driven Development). Esta herramienta resultó ser una elección **excelente** para trabajar en proyectos de esta naturaleza, gracias a su integración nativa con múltiples modelos de IA, gestión de contexto avanzado y automatización de fases de planificación e implementación.
+
+---
+
 Este proyecto representa una demostración de ingeniería web aplicada, donde el control total sobre el pipeline de renderizado y la arquitectura de red permite crear experiencias de juego de nivel profesional en el navegador.
