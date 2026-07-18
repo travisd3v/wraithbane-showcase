@@ -12,7 +12,7 @@ Este es mi primer juego completo como proyecto de desarrollo. Se trata de un *pl
 
 Lo que me motivó fue la posibilidad de combinar una arquitectura desacoplada de red con un motor gráfico optimizado para navegadores, manteniendo un control total sobre la lógica del juego.
 
-[Sitio Web](https://wraithbane.pro/) | [Mi Perfil](http://localhost:3000/autor)
+[Sitio Web](https://wraithbane.pro/) | [Mi Perfil](https://wraithbane.pro/autor)
 
 ---
 
